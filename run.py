@@ -5,13 +5,13 @@ import time
 dpis = ["1080x1920", "1920x1080", "4K"]
 locations = [
     "de-DE",  # Germany
-    "en-CA",  # Canada
-    "en-GB",  # United Kingdom
-    "en-IN",  # India
+    # "en-CA",  # Canada
+    # "en-GB",  # United Kingdom
+    # "en-IN",  # India
     "en-US",  # United States
     "es-ES",  # Spain
-    "fr-FR",  # France
-    "it-IT",  # Italy
+    # "fr-FR",  # France
+    # "it-IT",  # Italy
     "ja-JP",  # Japan
     "pt-BR",  # Brazil
     "zh-CN",  # China
