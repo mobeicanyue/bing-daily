@@ -1,0 +1,62 @@
+name: Fetch bing wallpaper
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+  # push:
+  #   branches:
+  #     - main
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Set variables
+        run: |
+          export formatted_time=$(date -u "+%Y%m%d%H")
+          echo "UTC time: $formatted_time"
+          echo "FULL_DATE=$formatted_time" >> $GITHUB_ENV
+
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+
+      - name: Run Python script
+        run: python run.py
+
+      - name: Setup webp
+        run: |
+          sudo apt update
+          sudo apt install webp
+
+      - name: Convert to webp
+        run: find . -type f -name '*.jpg' -exec sh -c 'cwebp "$1" -o "${1%.jpg}.webp"' _ {} \;
+      - name: Set default image
+        run: |
+          cp images/zh-CN-1920x1080.jpg images/default.jpg
+          cp images/zh-CN-1920x1080.webp images/default.webp
+
+      - name: Show files
+        run: |
+          ls images
+
+      - uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ env.FULL_DATE }}
+          commit: main
+          artifacts: images/*
+
+      - name: Purge jsDelivr cache
+        run: |
+          cd images || exit 1
+          for file in $(ls); do
+            if [[ $file == *.txt ]]; then
+              continue
+            fi
+            curl -i "https://purge.jsdelivr.net/gh/mobeicanyue/bing-daily@latest/${file}"
+            sleep 1
+          done
