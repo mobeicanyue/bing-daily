@@ -15,9 +15,9 @@ jobs:
     steps:
       - name: Set variables
         run: |
-          export formatted_time=$(date -u "+%Y.%m.%d")
-          echo "UTC time: $formatted_time"
-          echo "FULL_DATE=$formatted_time" >> $GITHUB_ENV
+          echo "UTC time: $(date -u +%Y.%m.%d)"
+          echo "RELEASE_NAME=Released on $(date -u +%Y.%m.%d)" >> $GITHUB_ENV
+          echo "TAG_NAME=$(date -u +%Y.%m.%d)" >> $GITHUB_ENV
 
       - uses: actions/checkout@v4
 
@@ -46,16 +46,22 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ env.FULL_DATE }}
+          tag: ${{ env.TAG_NAME }}
           commit: main
           artifacts: images/*
+          name: ${{ env.RELEASE_NAME }}
 
       - name: Git push assets to "release" branch
-        uses: ad-m/github-push-action@master
-        with:
-          branch: release
-          directory: images
-          force: true
+        run: |
+          cd release || exit 1
+          git init
+          git config --local user.name "github-actions[bot]"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b release
+          git add .
+          git commit -m "${{ env.RELEASE_NAME }}"
+          git remote add origin "https://github.com/mobeicanyue/bing-daily"
+          git push -f -u origin release
 
       - name: Purge jsDelivr cache
         run: |
