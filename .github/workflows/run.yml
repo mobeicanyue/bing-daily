@@ -61,9 +61,6 @@ jobs:
         run: |
           cd images || exit 1
           for file in $(ls); do
-            if [[ $file == *.txt ]]; then
-              continue
-            fi
-            curl -i "https://purge.jsdelivr.net/gh/mobeicanyue/bing-daily@latest/${file}"
+            curl -i "https://purge.jsdelivr.net/gh/mobeicanyue/bing-daily@release/${file}"
             sleep 1
           done
