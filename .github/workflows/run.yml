@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Set variables
         run: |
-          export formatted_time=$(date -u "+%Y%m%d%H")
+          export formatted_time=$(date -u "+%Y.%m.%d")
           echo "UTC time: $formatted_time"
           echo "FULL_DATE=$formatted_time" >> $GITHUB_ENV
 
