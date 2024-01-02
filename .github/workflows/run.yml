@@ -50,3 +50,20 @@ jobs:
           commit: main
           artifacts: images/*
 
+      - name: Git push assets to "release" branch
+        uses: ad-m/github-push-action@master
+        with:
+          branch: release
+          directory: images
+          force: true
+
+      - name: Purge jsDelivr cache
+        run: |
+          cd images || exit 1
+          for file in $(ls); do
+            if [[ $file == *.txt ]]; then
+              continue
+            fi
+            curl -i "https://purge.jsdelivr.net/gh/mobeicanyue/bing-daily@latest/${file}"
+            sleep 1
+          done
