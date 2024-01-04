@@ -1,3 +1,5 @@
+本项目最初的目的是充当博客的每日一图，但是加上文件后缀的 url 浏览器直接缓存，根本不会每日更换，所以替代方案是在服务器部署，将请求的网址 302 重定向到 bing 每日一图
+
 
 Fetch Bing daily image at UTC 00:00 and store it in the release.
 
